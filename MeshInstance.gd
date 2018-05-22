@@ -34,10 +34,10 @@ func calc_surface_normal_newell_method(vert_arr): # Newell's Method of calculati
 
 
 func lla_to_xyz(lon, lat, alt): # Lon Lat Alt to x y z converter.
-	var cosLat = cos(lat * PI / 180.0)
-	var sinLat = sin(lat * PI / 180.0)
-	var cosLon = cos(lon * PI / 180.0)
-	var sinLon = sin(lon * PI / 180.0)
+	var cosLat = cos(deg2rad(lat))
+	var sinLat = sin(deg2rad(lat))
+	var cosLon = cos(deg2rad(lon))
+	var sinLon = sin(deg2rad(lon))
 	var rad = 50.0 + alt;
 	var x = rad * cosLat * cosLon
 	var y = rad * sinLat
@@ -61,7 +61,6 @@ func _ready():
 	for x in range(360):
 		elev_data.append([])
 		for y in range(180):
-			print(img.get_pixel(x, y))
 			var alt = img.get_pixel(x, y).gray() * 10
 			elev_data[x].append(alt)
 
@@ -70,9 +69,8 @@ func _ready():
 
 	var surftool = SurfaceTool.new()
 
-	surftool.begin(VisualServer.PRIMITIVE_TRIANGLES)
+	surftool.begin(Mesh.PRIMITIVE_TRIANGLES)
 	surftool.set_material(material)
-#	surftool.add_smooth_group(true)
 	var vert1 = Vector3()
 	var vert2 = Vector3()
 	var vert3 = Vector3()
@@ -145,7 +143,6 @@ func _ready():
 			surftool.add_normal(normal2)
 			surftool.add_vertex(corner2)
 
-#	surftool.generate_normals()
-	surftool.index()
+			surftool.index()
 
 	self.set_mesh(surftool.commit())
